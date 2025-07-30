@@ -16,7 +16,7 @@ public class JWTService {
     @Value("${jwt.expiration:86400}")
     private int jwtExpiration;
 
-    public String generateToken(String username, String email, Integer role, String id,
+    public String generateAccessToken(String username, String email, Integer role, String id,
                                 String pictureUrl) {
         Date expiryDate  = new Date(System.currentTimeMillis() + jwtExpiration * 1000);
 
