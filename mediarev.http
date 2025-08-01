@@ -1,0 +1,10 @@
+@USER_TOKEN = my_token_value
+
+# @name mediarev
+
+
+### GET THE APP
+
+GET http://localhost:8080 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
