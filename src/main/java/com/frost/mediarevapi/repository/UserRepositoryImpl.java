@@ -45,7 +45,6 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    /** ✅ Save new user into DB */
     @Override
     public User save(User user) {
         String query = """
@@ -62,6 +61,6 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getPicturePath()
         );
 
-        return user; // Optionally return the user
+        return user;
     }
 }
