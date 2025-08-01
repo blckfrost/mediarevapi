@@ -7,4 +7,5 @@ import java.util.Optional;
 @Repository
 public interface UserRepository {
     Optional<User> findUserByEmail(String email);
+    User save(User user);
 }

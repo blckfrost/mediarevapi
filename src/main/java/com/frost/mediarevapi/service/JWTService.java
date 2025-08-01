@@ -32,4 +32,11 @@ public class JWTService {
                 .compact();
     }
 
+    public String getJwtSecret(){
+        return jwtSecret;
+    }
+
+    public int getJwtExpiration(){
+        return jwtExpiration;
+    }
 }
