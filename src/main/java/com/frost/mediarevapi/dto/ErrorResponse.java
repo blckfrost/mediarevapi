@@ -4,7 +4,6 @@ public class ErrorResponse {
         private String message;
         private Object error;
 
-        // Constructors
         public ErrorResponse() {}
 
         public ErrorResponse(String message) {
