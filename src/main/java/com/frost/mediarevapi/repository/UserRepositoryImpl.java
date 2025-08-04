@@ -17,13 +17,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findUserByEmail(String email) {
         String query = """
-            SELECT username, uid, password, email, accountType, picturePath,
-            CASE accountType
-                WHEN 0 THEN 'Admin'
-                WHEN 1 THEN 'DATA Entry'
-                WHEN 2 THEN 'Tenant'
-                WHEN 3 THEN 'Tenant User'
-            END AS acType
+            SELECT username, uid, password, email, accountType, picturePath, status
             FROM users WHERE email = ?
         """;
         try {
@@ -36,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
                         u.setPassword(rs.getString("password"));
                         u.setAccountType(rs.getInt("accountType"));
                         u.setPicturePath(rs.getString("picturePath"));
-                        u.setAcType(rs.getString("acType"));
+                        u.setStatus(rs.getString("status"));
                         return u;
                     });
             return Optional.ofNullable(user);

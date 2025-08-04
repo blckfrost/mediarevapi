@@ -18,8 +18,10 @@ public class LoginResponse {
     public static class UserInfo {
         private String username;
         private String email;
-        private Integer id;
-        private String Role;
+        private String uid;
+        private Integer accountType; // numeric role instead
+        private String role;
         private String pictureUrl;
+        private String status;
     }
 }

@@ -14,5 +14,5 @@ public class User {
     private String email;
     private Integer accountType;
     private String picturePath;
-    private String acType;
+    private String status;
 }

@@ -32,13 +32,13 @@ public class AuthService {
         // Find user email
         Optional<User> userOpt = userRepository.findUserByEmail(loginRequest.getEmail());
         if(userOpt.isEmpty()) {
-            throw new InvalidCredentialsException("Incorrect email or password");
+            throw new InvalidCredentialsException("Incorrect email");
         }
 
         User user = userOpt.get();
         boolean passwordMatch = passwordService.comparePassword(loginRequest.getPassword(), user.getPassword());
         if(!passwordMatch) {
-            throw new InvalidCredentialsException("Incorrect email or password");
+            throw new InvalidCredentialsException("Incorrect password");
 
         }
 
@@ -54,14 +54,27 @@ public class AuthService {
                 user.getPicturePath()
         );
 
+
         LoginResponse.UserInfo userInfo = new LoginResponse.UserInfo(
                 user.getUsername(),
                 user.getEmail(),
+                user.getUid(),
                 user.getAccountType(),
-                user.getAcType(),
-                user.getPicturePath()
+                getRoleFromAccountType(user.getAccountType()),
+                user.getPicturePath(),
+                user.getStatus()
         );
         return new LoginResponse(true, userInfo,token);
+    }
+
+    private String getRoleFromAccountType(int accountType) {
+        return switch (accountType) {
+            case 0 -> "Admin";
+            case 1 -> "Data Entry";
+            case 2 -> "Tenant";
+            case 3 -> "Tenant User";
+            default -> "Unknown";
+        };
     }
 
     public LoginResponse register(RegisterRequest request) {
@@ -77,12 +90,14 @@ public class AuthService {
         String uid = UUID.randomUUID().toString();
 
         User user = new User();
+
         user.setUid(uid);
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(hashedPassword);
         user.setAccountType(request.getAccountType() != null ? Integer.parseInt(request.getAccountType()) : 0);
         user.setPicturePath(request.getPicturePath());
+        user.setStatus("enabled");
 
         userRepository.save(user);
 
