@@ -15,10 +15,10 @@ POST http://localhost:8080/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "accountType": 0,
-  "email": "delafiado@gmail.com",
-  "password": "delafiador@123password",
-  "username": "del_fiador"
+
+  "username": "Demo User",
+  "email": "demouser@gmail.com",
+  "password": "StrongPassword123!"
 }
 
 
@@ -30,5 +30,10 @@ Content-Type: application/json
 
 {
   "email": "delafiado@gmail.com",
-  "password": "delafiador@123password"
+  "password": "StrongPassword123!"
 }
+
+### GET MEDIA FILES
+GET http://localhost:8080/api/media
+Accept: application/json
+Content-Type: application/json
