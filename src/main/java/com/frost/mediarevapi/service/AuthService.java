@@ -50,7 +50,7 @@ public class AuthService {
                 user.getUsername(),
                 user.getEmail(),
                 user.getAccountType(),
-                user.getId(),
+                user.getUserId(),
                 user.getPicturePath()
         );
 

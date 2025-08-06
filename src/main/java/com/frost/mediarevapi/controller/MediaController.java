@@ -6,6 +6,7 @@ import com.frost.mediarevapi.service.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,29 +32,18 @@ public class MediaController {
         }
     }
 
-//    @GetMapping("/{id}/{utk}")
-//    public ResponseEntity<?> getMediaById(@PathVariable String id, @PathVariable String utk){
-//        try{
-//            Map<String, Object> media = mediaService.getMediaByIdAndToken(id, utk);
-//            return ResponseEntity.ok(media);
-//        } catch (IllegalArgumentException e){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
-//        }catch (RuntimeException e){
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
-//        }catch(Exception e){
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(Map.of("message", "sorry, something went wrong...", "error", e.getMessage()));
-//        }
-//    }
 
-    @PostMapping("/print/create")
+    @PostMapping("/print")
     public ResponseEntity<?> createPrintMedia(
-            @RequestHeader("Authorization") String authHeader,
             @RequestBody Map<String, Object> payload
     ){
-
         try{
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if(auth == null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Authentication required"));
+            }
+            String userId = (String) auth.getPrincipal();
 
             String generatedMediaId = UUID.randomUUID().toString();
 
@@ -63,8 +53,8 @@ public class MediaController {
                     generatedMediaId,
                     1,
                     1,
-                    (String) payload.get("created_by"),
-                    (String) payload.get("updated_by")
+                    userId,
+                    userId
             );
 
             PrintMedia printMedia = new PrintMedia(
@@ -72,7 +62,7 @@ public class MediaController {
                     (String) payload.get("title"),
                     (String) payload.get("author"),
                     (String) payload.get("publication"),
-                    (String) payload.get("page_number"),
+                    (Integer) payload.get("page_number"),
                     (String) payload.get("summary"),
                     (String) payload.get("keywords"),
                     (String) payload.get("content"),
@@ -84,11 +74,18 @@ public class MediaController {
 
             mediaService.createPrintMedia(media, printMedia);
 
-            return ResponseEntity.ok(Map.of("message", "Print media created successfully", "mID", media.getMediaId()));
+            return ResponseEntity.ok(Map.of(
+                    "message", "Print media created successfully",
+                    "media_id", generatedMediaId,
+                    "created_by", userId
+            ));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Error creating media", "error", e.getMessage()));
+                    .body(Map.of(
+                            "message", "Error creating media",
+                            "error", e.getMessage()
+                    ));
         }
     }
 }

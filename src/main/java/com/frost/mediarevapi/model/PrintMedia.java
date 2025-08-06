@@ -12,8 +12,9 @@ public class PrintMedia {
     private Integer id;
     private String title;
     private String author;
+    private Integer pageNumber;
     private String publication;
-    private String pageNumber;
+    private String issueNumber;
     private String summary;
     private String keywords;
     private String content;

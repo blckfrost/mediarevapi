@@ -237,8 +237,8 @@ CREATE TABLE media (
     UNIQUE KEY unique_media_id (media_id)
 );
 
--- Print media articles
-CREATE TABLE print_articles (
+-- Print media 
+CREATE TABLE print_medias (
     id INT NOT NULL AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
@@ -304,7 +304,7 @@ CREATE TABLE radio_stories (
 );
 
 -- Web articles
-CREATE TABLE web_articles (
+CREATE TABLE web_medias (
     id INT NOT NULL AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     author VARCHAR(255) NOT NULL,
@@ -346,7 +346,6 @@ CREATE TABLE tags (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(105) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
-    created_at DATETIME NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );

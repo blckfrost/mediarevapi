@@ -2,7 +2,6 @@ package com.frost.mediarevapi.security;
 
 import com.frost.mediarevapi.service.JWTService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,28 +25,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
-        if(header == null || !header.startsWith("Bearer ")) {
+        String authHeader = request.getHeader("Authorization");
+        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
 
-        String token = header.substring(7);
+        String token = authHeader.substring(7);
 
         try{
-            Claims claims = Jwts.parser()
-                    .setSigningKey(jwtService.getJwtSecret())
-                    .parseClaimsJws(token)
-                    .getBody();
+            Claims claims = jwtService.getClaimsFromToken(token);
 
-            String username = claims.getSubject();
+            String userId  = claims.get("userId", String.class);
+            Integer role = claims.get("Role", Integer.class);
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, null, null);
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            if(userId == null){
+                throw new RuntimeException("Invalid JWT: Missing userId");
+            }
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            UsernamePasswordAuthenticationToken authToken =
+                    new  UsernamePasswordAuthenticationToken(userId, null, null);
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+            System.out.println("✅ Authenticated userId=" + userId);
+
             }catch(Exception e){
-                // Invalid Token ignore
+            System.out.println("❌ JWT Error: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"Invalid or expired token\"}");
+            return; // Stop filter chain
             }
 
         chain.doFilter(request, response);
