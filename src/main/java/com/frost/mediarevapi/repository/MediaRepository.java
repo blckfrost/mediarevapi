@@ -59,20 +59,22 @@ public class MediaRepository {
     public int insertPrintMedia(PrintMedia printMedia) {
         String sql = """
          INSERT INTO print_medias
-                    (title, author, publication, page_number, summary, keywords, content, image_path, industry, sub_industry, media_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (title, author, page_number, publication, issue_number, summary, keywords, content, image_path, industry, sub_industry, media_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
         return jdbcTemplate.update(sql,
                 printMedia.getTitle(),
                 printMedia.getAuthor(),
-                printMedia.getPublication(),
                 printMedia.getPageNumber(),
+                printMedia.getPublication(),
+                printMedia.getIssueNumber(),
                 printMedia.getSummary(),
                 printMedia.getKeywords(),
                 printMedia.getContent(),
                 printMedia.getPicturePath(),
                 printMedia.getIndustry(),
-                printMedia.getSubIndustry()
+                printMedia.getSubIndustry(),
+                printMedia.getMediaId()
         );
     }
 }
