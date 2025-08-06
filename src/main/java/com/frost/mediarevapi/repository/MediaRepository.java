@@ -16,71 +16,63 @@ public class MediaRepository {
 
     public List<Media> findAllMedia() {
         String query = """
-            SELECT m.pkid, m.title, m.mID, m.mediaType, m.createDate, m.updateDate, m.status,
-                            CASE m.mediaType
-                                WHEN 1 THEN 'Print Media'
-                                WHEN 2 THEN 'Radio Story'
-                                WHEN 3 THEN 'TV media'
-                                WHEN 4 THEN 'Web Media'
-                            END AS typeIW
-                            FROM medias m
-                            ORDER BY pkid DESC
+            SELECT id, title, media_id, media_type, created_by, updated_by, status
+            FROM media
+            ORDER BY id DESC
         """;
         try{
             return jdbcTemplate.query(query, (rs,rowNum) ->{
                 Media media = new Media();
 
-                media.setPkid(rs.getLong("pkid"));
+                media.setId(rs.getInt("id"));
                 media.setTitle(rs.getString("title"));
-                media.setMID(rs.getString("mID"));
-                media.setMediaType(rs.getInt("mediaType"));
-                media.setCreateDate(rs.getTimestamp("createDate"));
-                media.setUpdateDate(rs.getTimestamp("updateDate"));
-                media.setStatus(rs.getString("status"));
-                media.setTypeIW(rs.getString("typeIW"));
+                media.setMediaId(rs.getString("media_id"));
+                media.setMediaType(rs.getInt("media_type"));
+                media.setCreatedBy(rs.getString("created_by"));
+                media.setUpdatedBy(rs.getString("updated_by"));
+                media.setStatus(rs.getInt("status"));
 
                 return media;
             });
         }
         catch (Exception e){
-            return  null;
+            e.printStackTrace();
+            return List.of();
         }
     }
 
     public int insertMedia(Media media) {
         String sql = """
-        INSERT INTO medias (title, mID, mediaType, createDate, updateDate, status)
+        INSERT INTO media (title, media_id, media_type, created_by, updated_by, status)
         VALUES (?,?,?,?,?,?)
         """;
         return jdbcTemplate.update(sql,
                 media.getTitle(),
-                media.getMID(),
+                media.getMediaId(),
                 media.getMediaType(),
-                media.getCreateDate(),
-                media.getUpdateDate(),
+                media.getCreatedBy(),
+                media.getUpdatedBy(),
                 media.getStatus()
         );
     }
 
     public int insertPrintMedia(PrintMedia printMedia) {
         String sql = """
-         INSERT INTO printMedias
-                    (mID, title, author, publication, pageNumber, articleSummary, keywords, articleText, picturePath, industry, subindustry, createDate)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         INSERT INTO print_medias
+                    (title, author, publication, page_number, summary, keywords, content, image_path, industry, sub_industry, media_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
         return jdbcTemplate.update(sql,
-                printMedia.getMID(),
                 printMedia.getTitle(),
                 printMedia.getAuthor(),
                 printMedia.getPublication(),
                 printMedia.getPageNumber(),
-                printMedia.getArticleSummary(),
+                printMedia.getSummary(),
                 printMedia.getKeywords(),
-                printMedia.getArticleText(),
+                printMedia.getContent(),
                 printMedia.getPicturePath(),
                 printMedia.getIndustry(),
-                printMedia.getSubindustry(),
-                printMedia.getCreateDate()
+                printMedia.getSubIndustry()
         );
     }
 }

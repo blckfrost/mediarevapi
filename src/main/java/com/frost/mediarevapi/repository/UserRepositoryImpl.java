@@ -17,19 +17,20 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findUserByEmail(String email) {
         String query = """
-            SELECT username, uid, password, email, accountType, picturePath, status
+            SELECT id, user_id, username, email, password, account_type, picture_path, status
             FROM users WHERE email = ?
         """;
         try {
             User user = jdbcTemplate.queryForObject(query, new Object[]{email},
                     (rs, rowNum) -> {
                         User u = new User();
+                        u.setId(rs.getInt("id"));
+                        u.setUserId(rs.getString("user_id"));
                         u.setUsername(rs.getString("username"));
                         u.setEmail(rs.getString("email"));
-                        u.setUid(rs.getString("uid"));
                         u.setPassword(rs.getString("password"));
-                        u.setAccountType(rs.getInt("accountType"));
-                        u.setPicturePath(rs.getString("picturePath"));
+                        u.setAccountType(rs.getInt("account_type"));
+                        u.setPicturePath(rs.getString("picture_path"));
                         u.setStatus(rs.getString("status"));
                         return u;
                     });
@@ -42,12 +43,12 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User save(User user) {
         String query = """
-            INSERT INTO users (uid, username, email, password, accountType, picturePath)
+            INSERT INTO users (user_id, username, email, password, account_type, picture_path)
             VALUES (?, ?, ?, ?, ?, ?)
         """;
 
         jdbcTemplate.update(query,
-                user.getUid(),
+                user.getUserId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),

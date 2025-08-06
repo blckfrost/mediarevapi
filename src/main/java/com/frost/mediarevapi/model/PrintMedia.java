@@ -4,23 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PrintMedia {
-    private Long pkid;
-    private String mID;             // Foreign key to mr_media.mID
+    private Integer id;
     private String title;
     private String author;
     private String publication;
     private String pageNumber;
-    private String articleSummary;
+    private String summary;
     private String keywords;
-    private String articleText;
+    private String content;
     private String picturePath;
     private String industry;
-    private String subindustry;
-    private Timestamp createDate;
+    private String subIndustry;
+    private String mediaId;
 }

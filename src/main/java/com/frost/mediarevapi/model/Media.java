@@ -10,12 +10,11 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Media {
-    private Long pkid;
+    private Integer id;
     private String title;
-    private String mID;
+    private String mediaId;
     private Integer mediaType;
-    private Date createDate;
-    private Date updateDate;
-    private String status;
-    private String typeIW;
+    private Integer status;
+    private String createdBy;
+    private String updatedBy;
 }

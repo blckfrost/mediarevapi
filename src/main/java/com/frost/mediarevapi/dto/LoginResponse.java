@@ -16,12 +16,13 @@ public class LoginResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserInfo {
+        private Integer id;
+        private String userId;
         private String username;
         private String email;
-        private String uid;
-        private Integer accountType; // numeric role instead
+        private Integer accountType;
         private String role;
-        private String pictureUrl;
+        private String picturePath;
         private String status;
     }
 }

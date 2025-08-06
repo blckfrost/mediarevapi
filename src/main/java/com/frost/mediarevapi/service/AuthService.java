@@ -50,15 +50,16 @@ public class AuthService {
                 user.getUsername(),
                 user.getEmail(),
                 user.getAccountType(),
-                user.getUid(),
+                user.getId(),
                 user.getPicturePath()
         );
 
 
         LoginResponse.UserInfo userInfo = new LoginResponse.UserInfo(
+                user.getId(),
+                user.getUserId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getUid(),
                 user.getAccountType(),
                 getRoleFromAccountType(user.getAccountType()),
                 user.getPicturePath(),
@@ -87,17 +88,17 @@ public class AuthService {
         }
 
         String hashedPassword = passwordService.hashPassword(request.getPassword());
-        String uid = UUID.randomUUID().toString();
+        String userId = UUID.randomUUID().toString();
 
         User user = new User();
 
-        user.setUid(uid);
+        user.setUserId(userId);
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(hashedPassword);
         user.setAccountType(request.getAccountType() != null ? Integer.parseInt(request.getAccountType()) : 0);
         user.setPicturePath(request.getPicturePath());
-        user.setStatus("enabled");
+        user.setStatus("active");
 
         userRepository.save(user);
 
