@@ -9,7 +9,6 @@ import com.frost.mediarevapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -30,16 +29,12 @@ public class AuthService {
         }
 
         // Find user email
-        Optional<User> userOpt = userRepository.findUserByEmail(loginRequest.getEmail());
-        if(userOpt.isEmpty()) {
-            throw new InvalidCredentialsException("Incorrect email");
-        }
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("Incorrect Email"));
 
-        User user = userOpt.get();
-        boolean passwordMatch = passwordService.comparePassword(loginRequest.getPassword(), user.getPassword());
-        if(!passwordMatch) {
+
+        if(!passwordService.comparePassword(loginRequest.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Incorrect password");
-
         }
 
         return getLoginResponse(user);
@@ -54,7 +49,6 @@ public class AuthService {
                 user.getPicturePath()
         );
 
-
         LoginResponse.UserInfo userInfo = new LoginResponse.UserInfo(
                 user.getId(),
                 user.getUserId(),
@@ -65,7 +59,7 @@ public class AuthService {
                 user.getPicturePath(),
                 user.getStatus()
         );
-        return new LoginResponse(true, userInfo,token);
+        return new LoginResponse(true, userInfo, token);
     }
 
     private String getRoleFromAccountType(int accountType) {
@@ -83,11 +77,10 @@ public class AuthService {
             throw new InvalidCredentialsException("Missing required fields");
         }
 
-        if(userRepository.findUserByEmail(request.getEmail()).isPresent()) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new InvalidCredentialsException("Email already in use");
         }
 
-        String hashedPassword = passwordService.hashPassword(request.getPassword());
         String userId = UUID.randomUUID().toString();
 
         User user = new User();
@@ -95,7 +88,7 @@ public class AuthService {
         user.setUserId(userId);
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(hashedPassword);
+        user.setPassword(passwordService.hashPassword(request.getPassword()));
         user.setAccountType(request.getAccountType() != null ? Integer.parseInt(request.getAccountType()) : 0);
         user.setPicturePath(request.getPicturePath());
         user.setStatus("active");

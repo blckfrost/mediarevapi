@@ -1,5 +1,6 @@
 package com.frost.mediarevapi.controller;
 
+import com.frost.mediarevapi.dto.PrintMediaRequest;
 import com.frost.mediarevapi.model.Media;
 import com.frost.mediarevapi.model.PrintMedia;
 import com.frost.mediarevapi.service.MediaService;
@@ -35,7 +36,7 @@ public class MediaController {
 
     @PostMapping("/print")
     public ResponseEntity<?> createPrintMedia(
-            @RequestBody Map<String, Object> payload
+            @RequestBody PrintMediaRequest request
     ){
         try{
             var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -49,7 +50,7 @@ public class MediaController {
 
             Media media = new Media(
                     null,
-                    (String) payload.get("title"),
+                    request.getTitle(),
                     generatedMediaId,
                     1,
                     1,
@@ -59,17 +60,17 @@ public class MediaController {
 
             PrintMedia printMedia = new PrintMedia(
                     null,
-                    (String) payload.get("title"),
-                    (String) payload.get("author"),
-                    (Integer) payload.get("page_number"),
-                    (String) payload.get("publication"),
-                    (String) payload.get("issue_number"),
-                    (String) payload.get("summary"),
-                    (String) payload.get("keywords"),
-                    (String) payload.get("content"),
-                    (String) payload.get("image_path"),
-                    (String) payload.get("industry"),
-                    (String) payload.get("sub_industry"),
+                    request.getTitle(),
+                    request.getAuthor(),
+                    request.getPageNumber(),
+                    request.getPublication(),
+                    request.getIssueNumber(),
+                    request.getSummary(),
+                    request.getKeywords(),
+                    request.getContent(),
+                    request.getImagePath(),
+                    request.getIndustry(),
+                    request.getSubIndustry(),
                     generatedMediaId
             );
 
