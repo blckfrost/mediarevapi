@@ -21,8 +21,6 @@ public class MediaService {
     private MediaRepository mediaRepository;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
     private PrintMediaRepository printMediaRepository;
 
     public List<Media> getAllMedia() {
@@ -52,7 +50,9 @@ public class MediaService {
             }
         }
 
-        return response;
+        //return response;
+
+        return Map.of();
     }
 
     public void createPrintMedia(Media media, PrintMedia printMedia){
